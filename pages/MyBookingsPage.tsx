@@ -2,48 +2,46 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { CalendarView } from '../components/CalendarView';
-
-interface Booking {
-  id: string;
-  serviceName: string;
-  date: string;
-  time: string;
-  status: string;
-  createdAt: string;
-}
+import { databaseService } from '../services/databaseService';
+import { Booking } from '../types';
 
 export const MyBookingsPage: React.FC = () => {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [viewMode, setViewMode] = useState<'list' | 'calendar'>('calendar');
-  const [isSyncing, setIsSyncing] = useState(false);
 
   useEffect(() => {
-    const data = JSON.parse(localStorage.getItem('pdn_bookings') || '[]');
-    setBookings(data);
+    loadBookings();
   }, []);
 
-  const handleSync = () => {
-    setIsSyncing(true);
-    setTimeout(() => {
-      setIsSyncing(false);
-      alert('已成功從雲端同步最新預約。');
-    }, 1200);
+  const loadBookings = () => {
+    const data = databaseService.getMyBookings();
+    // 只顯示未取消的預約
+    setBookings(data.filter(b => b.status !== 'cancelled'));
   };
 
-  const deleteBooking = (id: string) => {
-    if (window.confirm('確定要取消此預約嗎？')) {
-      const updated = bookings.filter(b => b.id !== id);
-      setBookings(updated);
-      localStorage.setItem('pdn_bookings', JSON.stringify(updated));
+  const handleCancel = (id: string) => {
+    if (window.confirm('確定要取消此筆預約嗎？')) {
+      databaseService.cancelBooking(id);
+      loadBookings();
+      alert('預約已取消。');
+    }
+  };
+
+  const getStatusLabel = (status: string) => {
+    switch(status) {
+      case 'pending': return { label: '待處理', color: 'text-amber-600 bg-amber-50' };
+      case 'confirmed': return { label: '已確認', color: 'text-green-600 bg-green-50' };
+      case 'completed': return { label: '服務完成', color: 'text-slate-400 bg-slate-50' };
+      default: return { label: '已取消', color: 'text-rose-600 bg-rose-50' };
     }
   };
 
   return (
     <div className="py-16 px-6 max-w-6xl mx-auto">
-      <div className="flex flex-col md:flex-row justify-between items-end mb-8 gap-6">
+      <div className="flex flex-col md:flex-row justify-between items-end mb-10 gap-6">
         <div>
-          <h1 className="text-4xl font-serif text-slate-900">我的預約行事曆</h1>
-          <p className="text-slate-500 mt-2">點擊日期即可查看預約細節</p>
+          <h1 className="text-4xl font-serif text-slate-900">我的預約記錄</h1>
+          <p className="text-slate-500 mt-2">您可以在此查看所有與 PDN 預定的指尖藝術行程。</p>
         </div>
         
         <div className="flex bg-white p-1 rounded-2xl shadow-sm border border-slate-100">
@@ -51,7 +49,7 @@ export const MyBookingsPage: React.FC = () => {
             onClick={() => setViewMode('calendar')}
             className={`px-6 py-2 rounded-xl text-sm font-bold transition-all ${viewMode === 'calendar' ? 'bg-pdn-plum text-white shadow-md' : 'text-slate-500 hover:text-pdn-plum'}`}
           >
-            行事曆視圖
+            日曆視圖
           </button>
           <button 
             onClick={() => setViewMode('list')}
@@ -62,24 +60,13 @@ export const MyBookingsPage: React.FC = () => {
         </div>
       </div>
 
-      <div className="mb-8 flex justify-end">
-        <button 
-          onClick={handleSync}
-          disabled={isSyncing}
-          className="flex items-center gap-2 text-pdn-plum text-sm font-bold hover:underline"
-        >
-          <span className={isSyncing ? 'animate-spin' : ''}>🔄</span>
-          {isSyncing ? '正在同步雲端日曆...' : '立即同步 Google 日曆'}
-        </button>
-      </div>
-
       {bookings.length === 0 ? (
         <div className="bg-white rounded-3xl p-20 text-center border border-slate-100 shadow-sm">
           <div className="text-6xl mb-6">🗓️</div>
-          <h3 className="text-xl font-serif text-slate-800 mb-4">目前暫無預約</h3>
-          <p className="text-slate-500 mb-8">為您的指尖預約一場優雅的旅行吧。</p>
-          <Link to="/booking" className="bg-pdn-plum text-white px-8 py-4 rounded-full font-bold shadow-lg shadow-rose-100">
-            開始預約
+          <h3 className="text-xl font-serif text-slate-800 mb-4">目前尚無預約</h3>
+          <p className="text-slate-500 mb-8">今天，給指尖一個改變的機會吧。</p>
+          <Link to="/booking" className="bg-pdn-plum text-white px-8 py-4 rounded-full font-bold shadow-lg shadow-rose-100 transition-transform active:scale-95">
+            立即開始預約
           </Link>
         </div>
       ) : (
@@ -90,48 +77,53 @@ export const MyBookingsPage: React.FC = () => {
             </div>
           ) : (
             <div className="space-y-4 fade-in">
-              {bookings.map((booking) => (
-                <div key={booking.id} className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:shadow-md transition-all flex flex-col md:flex-row justify-between items-center gap-6">
-                  <div className="flex items-center gap-6">
-                    <div className="bg-pdn-soft w-16 h-16 rounded-2xl flex flex-col items-center justify-center text-pdn-plum">
-                      <span className="text-[10px] font-bold uppercase">{new Date(booking.date).toLocaleString('zh-TW', { month: 'short' })}</span>
-                      <span className="text-xl font-serif font-bold">{new Date(booking.date).getDate()}</span>
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-slate-800 text-lg">{booking.serviceName}</h3>
-                      <div className="flex items-center gap-4 text-sm text-slate-500 mt-1">
-                        <span>⏰ {booking.time}</span>
-                        <span className="flex items-center gap-1">
-                          <span className="w-2 h-2 rounded-full bg-green-500"></span>
-                          系統已入帳
-                        </span>
+              {bookings.map((booking) => {
+                const status = getStatusLabel(booking.status);
+                return (
+                  <div key={booking.id} className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:shadow-md transition-all flex flex-col md:flex-row justify-between items-center gap-6">
+                    <div className="flex items-center gap-6 flex-1">
+                      <div className="bg-pdn-soft w-16 h-16 rounded-2xl flex flex-col items-center justify-center text-pdn-plum border border-rose-100">
+                        <span className="text-[10px] font-bold uppercase">{new Date(booking.date).toLocaleString('zh-TW', { month: 'short' })}</span>
+                        <span className="text-xl font-serif font-bold">{new Date(booking.date).getDate()}</span>
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2 mb-1">
+                          <h3 className="font-bold text-slate-800 text-lg">{booking.serviceName}</h3>
+                          <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${status.color}`}>
+                            {status.label}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-4 text-xs text-slate-500 mt-1">
+                          <span>📅 {booking.date}</span>
+                          <span>⏰ {booking.time}</span>
+                        </div>
                       </div>
                     </div>
+                    <div className="flex gap-3">
+                      <button 
+                        onClick={() => handleCancel(booking.id)}
+                        className="text-slate-400 hover:text-rose-500 text-xs font-medium px-4 py-2 transition-colors"
+                      >
+                        取消預約
+                      </button>
+                      <Link to="/booking" className="bg-pdn-plum text-white px-6 py-2 rounded-full text-sm font-bold shadow-sm active:scale-95 transition-all">
+                        再次預約
+                      </Link>
+                    </div>
                   </div>
-                  <div className="flex gap-3">
-                    <button 
-                      onClick={() => deleteBooking(booking.id)}
-                      className="text-slate-400 hover:text-rose-500 text-sm font-medium px-4 py-2"
-                    >
-                      取消
-                    </button>
-                    <Link to="/booking" className="bg-pdn-plum text-white px-6 py-2 rounded-full text-sm font-bold shadow-sm">
-                      再次預約
-                    </Link>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </>
       )}
       
-      <div className="mt-12 p-8 bg-pdn-soft/50 rounded-3xl border border-rose-100/50 flex flex-col md:flex-row items-center gap-6">
+      <div className="mt-12 p-8 bg-pdn-soft/50 rounded-3xl border border-rose-100 flex flex-col md:flex-row items-center gap-6">
         <div className="text-3xl">💡</div>
         <div className="flex-1 text-center md:text-left">
-          <h4 className="font-bold text-slate-800 mb-1">小提示</h4>
+          <h4 className="font-bold text-slate-800 mb-1 tracking-tight">預約小提醒</h4>
           <p className="text-sm text-slate-600 leading-relaxed">
-            系統會自動偵測您的 Google 日曆變動。若您在 Google 日曆中刪除行程，本系統將於下次同步時自動更新狀態。
+            PDN 的系統會自動為您鎖定時段，確保您的權益。若您需要臨時取消或更改時間，請務必透過 LINE 與 Eating 直接溝通，以免造成時段浪費。
           </p>
         </div>
       </div>

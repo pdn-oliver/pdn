@@ -1,9 +1,11 @@
 
 import { Service, ServiceCategory, Artist } from './types';
 
-// 請在此處替換為您的 Google 日曆「預約安排」公開連結
-// 提示：Google 預約安排連結通常以 https://calendar.google.com/calendar/appointments/... 開頭
-export const GOOGLE_BOOKING_URL = "https://calendar.google.com/calendar/appointments/schedules/AcZssZ0Xf8-placeholder"; 
+export const BOOKING_STEPS = [
+  { title: "挑選款式", desc: "選擇您想施作的美甲服務項目" },
+  { title: "選擇時間", desc: "在日曆中挑選日期與可預約時段" },
+  { title: "填寫資料", desc: "留下聯絡資訊，完成線上預約" }
+];
 
 export const SERVICES: Service[] = [
   {
