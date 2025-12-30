@@ -7,6 +7,7 @@ import { BookingPage } from './pages/BookingPage';
 import { AIStylistPage } from './pages/AIStylistPage';
 import { GalleryPage } from './pages/GalleryPage';
 import { MyBookingsPage } from './pages/MyBookingsPage';
+import { AdminDashboardPage } from './pages/AdminDashboardPage';
 
 const App: React.FC = () => {
   return (
@@ -18,6 +19,7 @@ const App: React.FC = () => {
           <Route path="/ai-stylist" element={<AIStylistPage />} />
           <Route path="/gallery" element={<GalleryPage />} />
           <Route path="/my-bookings" element={<MyBookingsPage />} />
+          <Route path="/admin" element={<AdminDashboardPage />} />
           <Route path="/services" element={<div className="p-20 text-center"><h2 className="text-4xl font-serif">服務項目開發中</h2></div>} />
         </Routes>
       </Layout>

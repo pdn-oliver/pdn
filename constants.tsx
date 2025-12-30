@@ -1,6 +1,10 @@
 
 import { Service, ServiceCategory, Artist } from './types';
 
+// 請在此處替換為您的 Google 日曆「預約安排」公開連結
+// 提示：Google 預約安排連結通常以 https://calendar.google.com/calendar/appointments/... 開頭
+export const GOOGLE_BOOKING_URL = "https://calendar.google.com/calendar/appointments/schedules/AcZssZ0Xf8-placeholder"; 
+
 export const SERVICES: Service[] = [
   {
     id: 's1',
@@ -51,7 +55,6 @@ export const ARTISTS: Artist[] = [
   }
 ];
 
-// 忠實反映您上傳的 11 張照片風格
 export const GALLERY_IMAGES = [
   { id: 1, title: '繽紛果凍法式跳色', url: 'https://images.unsplash.com/photo-1634712282287-14ed57b9cc89?q=80&w=1000&auto=format&fit=crop', tag: '法式' },
   { id: 2, title: '手寫聖誕麋鹿彩繪', url: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?q=80&w=1000&auto=format&fit=crop', tag: '手繪' },

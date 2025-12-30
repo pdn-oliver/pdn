@@ -28,12 +28,17 @@ export interface Artist {
 export interface Booking {
   id: string;
   serviceId: string;
+  serviceName: string; // 冗餘儲存以便顯示
+  price: number;      // 冗餘儲存預約當時價格
   artistId: string;
+  artistName: string;
   date: string;
   time: string;
   customerName: string;
   customerPhone: string;
   notes?: string;
+  status: 'pending' | 'confirmed' | 'completed' | 'cancelled';
+  createdAt: string;
 }
 
 export interface AIRecommendation {

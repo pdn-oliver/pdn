@@ -76,9 +76,9 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
               <a href="https://www.instagram.com/eating_ce/" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-white transition-colors flex items-center gap-2 text-sm">
                 <span className="w-5">📸</span> Instagram: eating_ce
               </a>
-              <a href="https://line.me/R/ti/p/@957qhped?oat__id=4910615#~" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-white transition-colors flex items-center gap-2 text-sm">
-                <span className="w-5">💬</span> LINE: @957qhped
-              </a>
+              <Link to="/admin" className="text-slate-600 hover:text-white transition-colors flex items-center gap-2 text-[10px] mt-8">
+                🔐 管理員後台入口
+              </Link>
             </div>
           </div>
         </div>
