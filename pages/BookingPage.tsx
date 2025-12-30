@@ -19,10 +19,43 @@ export const BookingPage: React.FC = () => {
   const nextStep = () => setStep(prev => prev + 1);
   const prevStep = () => setStep(prev => prev - 1);
 
+  const generateGoogleCalendarLink = (data: any, serviceName: string) => {
+    const startTime = `${data.date.replace(/-/g, '')}T${data.time.replace(':', '')}00`;
+    // 假設預約時長為 2 小時
+    const endDate = new Date(`${data.date}T${data.time}`);
+    endDate.setHours(endDate.getHours() + 2);
+    const endTime = endDate.toISOString().replace(/-|:|\.\d\d\d/g, '');
+    
+    const details = `預約項目：${serviceName}\n美甲師：Eating\n備註：${data.notes || '無'}`;
+    const location = `PDN 專業美甲 (臺中市北屯區軍福七路36號)`;
+    
+    return `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent('PDN 美甲預約 - ' + serviceName)}&dates=${startTime}/${endTime}&details=${encodeURIComponent(details)}&location=${encodeURIComponent(location)}`;
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    alert('預約成功！PDN 將儘速與您聯繫確認細節。');
-    navigate('/');
+    const selectedService = SERVICES.find(s => s.id === formData.serviceId);
+    
+    // 儲存到 LocalStorage 模擬資料庫
+    const newBooking = {
+      ...formData,
+      id: `BK-${Date.now()}`,
+      serviceName: selectedService?.name,
+      status: 'confirmed',
+      createdAt: new Date().toISOString()
+    };
+    
+    const existingBookings = JSON.parse(localStorage.getItem('pdn_bookings') || '[]');
+    localStorage.setItem('pdn_bookings', JSON.stringify([newBooking, ...existingBookings]));
+
+    const gCalLink = generateGoogleCalendarLink(formData, selectedService?.name || '');
+    
+    // 顯示成功訊息與跳轉選項
+    if (window.confirm('預約申請成功！是否要將此預約加入您的 Google 日曆？')) {
+      window.open(gCalLink, '_blank');
+    }
+    
+    navigate('/my-bookings');
   };
 
   const selectedService = SERVICES.find(s => s.id === formData.serviceId);
@@ -34,8 +67,8 @@ export const BookingPage: React.FC = () => {
         <div className="flex items-center space-x-4">
           {[1, 2, 3].map(num => (
             <React.Fragment key={num}>
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${
-                step >= num ? 'bg-pdn-plum text-white' : 'bg-slate-200 text-slate-500'
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all ${
+                step >= num ? 'bg-pdn-plum text-white shadow-lg' : 'bg-slate-200 text-slate-500'
               }`}>
                 {num}
               </div>
@@ -107,7 +140,7 @@ export const BookingPage: React.FC = () => {
               <h2 className="text-2xl font-serif mb-6 text-slate-900">2. 選擇日期與時段</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div>
-                  <label className="block font-semibold mb-4 text-slate-700">預約日期</label>
+                  <label className="block font-semibold mb-4 text-slate-700">預預約日期</label>
                   <input 
                     type="date" 
                     className="w-full p-4 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-rose-200"
@@ -151,7 +184,7 @@ export const BookingPage: React.FC = () => {
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="bg-pdn-soft p-6 rounded-2xl flex items-center justify-between mb-8 border border-rose-100">
                   <div>
-                    <p className="text-xs text-pdn-plum uppercase tracking-widest font-bold">Booking Details</p>
+                    <p className="text-xs text-pdn-plum uppercase tracking-widest font-bold">Booking Summary</p>
                     <p className="font-serif text-xl text-slate-800">{selectedService?.name} with {selectedArtist?.name}</p>
                     <p className="text-slate-500">{formData.date} at {formData.time}</p>
                   </div>
@@ -196,7 +229,7 @@ export const BookingPage: React.FC = () => {
                 <div className="flex gap-4 pt-6">
                   <button type="button" onClick={prevStep} className="flex-1 bg-slate-100 text-slate-700 py-4 rounded-full font-bold">返回</button>
                   <button type="submit" className="flex-[2] bg-pdn-plum text-white py-4 rounded-full font-bold hover:bg-[#6e2a3a] shadow-xl shadow-rose-100">
-                    確認送出預約
+                    確認送出預約並同步日曆
                   </button>
                 </div>
               </form>
