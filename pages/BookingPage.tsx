@@ -21,12 +21,11 @@ export const BookingPage: React.FC = () => {
 
   const generateGoogleCalendarLink = (data: any, serviceName: string) => {
     const startTime = `${data.date.replace(/-/g, '')}T${data.time.replace(':', '')}00`;
-    // 假設預約時長為 2 小時
     const endDate = new Date(`${data.date}T${data.time}`);
     endDate.setHours(endDate.getHours() + 2);
     const endTime = endDate.toISOString().replace(/-|:|\.\d\d\d/g, '');
     
-    const details = `預約項目：${serviceName}\n美甲師：Eating\n備註：${data.notes || '無'}`;
+    const details = `預約項目：${serviceName}\n美甲師：Eating\n備註：${data.notes || '無'}\n\n查看系統預約：https://pdn-nails.web.app/#/my-bookings`;
     const location = `PDN 專業美甲 (臺中市北屯區軍福七路36號)`;
     
     return `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent('PDN 美甲預約 - ' + serviceName)}&dates=${startTime}/${endTime}&details=${encodeURIComponent(details)}&location=${encodeURIComponent(location)}`;
@@ -36,7 +35,6 @@ export const BookingPage: React.FC = () => {
     e.preventDefault();
     const selectedService = SERVICES.find(s => s.id === formData.serviceId);
     
-    // 儲存到 LocalStorage 模擬資料庫
     const newBooking = {
       ...formData,
       id: `BK-${Date.now()}`,
@@ -50,8 +48,9 @@ export const BookingPage: React.FC = () => {
 
     const gCalLink = generateGoogleCalendarLink(formData, selectedService?.name || '');
     
-    // 顯示成功訊息與跳轉選項
-    if (window.confirm('預約申請成功！是否要將此預約加入您的 Google 日曆？')) {
+    alert('預約已送出！系統行事曆已同步更新。');
+    
+    if (window.confirm('是否要額外將此預約加入您的個人 Google 日曆？')) {
       window.open(gCalLink, '_blank');
     }
     
@@ -140,7 +139,7 @@ export const BookingPage: React.FC = () => {
               <h2 className="text-2xl font-serif mb-6 text-slate-900">2. 選擇日期與時段</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div>
-                  <label className="block font-semibold mb-4 text-slate-700">預預約日期</label>
+                  <label className="block font-semibold mb-4 text-slate-700">預約日期</label>
                   <input 
                     type="date" 
                     className="w-full p-4 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-rose-200"
@@ -217,7 +216,7 @@ export const BookingPage: React.FC = () => {
                     />
                   </div>
                   <div className="md:col-span-2">
-                    <label className="block text-sm font-semibold mb-2 text-slate-700">備註 (如：是否有舊甲需卸除)</label>
+                    <label className="block text-sm font-semibold mb-2 text-slate-700">備註</label>
                     <textarea 
                       value={formData.notes}
                       onChange={(e) => setFormData({...formData, notes: e.target.value})}
@@ -229,7 +228,7 @@ export const BookingPage: React.FC = () => {
                 <div className="flex gap-4 pt-6">
                   <button type="button" onClick={prevStep} className="flex-1 bg-slate-100 text-slate-700 py-4 rounded-full font-bold">返回</button>
                   <button type="submit" className="flex-[2] bg-pdn-plum text-white py-4 rounded-full font-bold hover:bg-[#6e2a3a] shadow-xl shadow-rose-100">
-                    確認送出預約並同步日曆
+                    確認送出預約
                   </button>
                 </div>
               </form>
