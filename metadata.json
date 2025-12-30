@@ -1,0 +1,7 @@
+{
+  "name": "PDN 專業美甲",
+  "description": "PDN 專業美甲 - 指尖上的藝術，由我們為您創造。提供線上預約與 AI 智慧風格諮詢服務。",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
