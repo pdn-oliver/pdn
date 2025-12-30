@@ -148,16 +148,39 @@
             );
         };
 
-        const BookingPage = ({ setPath }) => (
-            <div className="py-20 text-center fade-in">
-                <h2 className="text-3xl font-serif mb-4">預約系統</h2>
-                <div className="max-w-md mx-auto p-8 bg-white rounded-3xl shadow-lg">
-                    <p className="text-slate-500 mb-6">請選擇您心儀的時段</p>
-                    <input type="date" className="w-full p-4 border rounded-xl mb-4" />
-                    <button onClick={() => {alert('預約成功！'); setPath('home')}} className="w-full bg-pdn-plum text-white py-4 rounded-full font-bold">確認預約</button>
+        const BookingPage = ({ setPath }) => {
+            const [date, setDate] = useState('');
+            const handleBooking = () => {
+                if (!date) return alert('請選擇日期');
+                
+                const emailTo = "ooliver10221052@gmail.com";
+                const subject = encodeURIComponent("[PDN 美甲預約通知]");
+                const body = encodeURIComponent(`您好，系統收到一筆新的預約申請：\n\n預約日期: ${date}\n請至系統後台確認詳細客戶資訊。`);
+                
+                window.location.href = `mailto:${emailTo}?subject=${subject}&body=${body}`;
+                
+                alert('預約成功！系統已為您準備好預約郵件，請點擊「發送」以完成通知。');
+                setPath('home');
+            };
+
+            return (
+                <div className="py-20 text-center fade-in">
+                    <h2 className="text-3xl font-serif mb-4">預約系統</h2>
+                    <div className="max-w-md mx-auto p-8 bg-white rounded-3xl shadow-lg">
+                        <p className="text-slate-500 mb-6">請選擇您心儀的日期</p>
+                        <input 
+                            type="date" 
+                            value={date}
+                            onChange={e => setDate(e.target.value)}
+                            className="w-full p-4 border rounded-xl mb-4" 
+                        />
+                        <button onClick={handleBooking} className="w-full bg-pdn-plum text-white py-4 rounded-full font-bold hover:bg-[#6e2a3a] transition-all">
+                            確認預約並發送 Email
+                        </button>
+                    </div>
                 </div>
-            </div>
-        );
+            );
+        };
 
         // --- Main App ---
         const App = () => {

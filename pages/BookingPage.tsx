@@ -19,22 +19,36 @@ export const BookingPage: React.FC = () => {
   const nextStep = () => setStep(prev => prev + 1);
   const prevStep = () => setStep(prev => prev - 1);
 
-  const generateGoogleCalendarLink = (data: any, serviceName: string) => {
-    const startTime = `${data.date.replace(/-/g, '')}T${data.time.replace(':', '')}00`;
-    const endDate = new Date(`${data.date}T${data.time}`);
-    endDate.setHours(endDate.getHours() + 2);
-    const endTime = endDate.toISOString().replace(/-|:|\.\d\d\d/g, '');
-    
-    const details = `預約項目：${serviceName}\n美甲師：Eating\n備註：${data.notes || '無'}\n\n查看系統預約：https://pdn-nails.web.app/#/my-bookings`;
-    const location = `PDN 專業美甲 (臺中市北屯區軍福七路36號)`;
-    
-    return `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent('PDN 美甲預約 - ' + serviceName)}&dates=${startTime}/${endTime}&details=${encodeURIComponent(details)}&location=${encodeURIComponent(location)}`;
+  const sendEmailNotification = (data: any, serviceName: string, artistName: string) => {
+    const emailTo = "ooliver10221052@gmail.com";
+    const subject = `[PDN 美甲預約通知] - ${data.name}`;
+    const body = `您好，收到一筆來自 PDN 系統的新預約：
+
+----------------------------------
+預約細節：
+----------------------------------
+客戶姓名：${data.name}
+聯絡電話：${data.phone}
+預約日期：${data.date}
+預約時段：${data.time}
+服務項目：${serviceName}
+指名美甲師：${artistName}
+客戶備註：${data.notes || '無'}
+
+----------------------------------
+本郵件由 PDN 預約系統自動生成
+----------------------------------`;
+
+    const mailtoUrl = `mailto:${emailTo}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.location.href = mailtoUrl;
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const selectedService = SERVICES.find(s => s.id === formData.serviceId);
+    const selectedArtist = ARTISTS.find(a => a.id === formData.artistId);
     
+    // 1. 儲存到本地紀錄
     const newBooking = {
       ...formData,
       id: `BK-${Date.now()}`,
@@ -46,13 +60,10 @@ export const BookingPage: React.FC = () => {
     const existingBookings = JSON.parse(localStorage.getItem('pdn_bookings') || '[]');
     localStorage.setItem('pdn_bookings', JSON.stringify([newBooking, ...existingBookings]));
 
-    const gCalLink = generateGoogleCalendarLink(formData, selectedService?.name || '');
-    
-    alert('預約已送出！系統行事曆已同步更新。');
-    
-    if (window.confirm('是否要額外將此預約加入您的個人 Google 日曆？')) {
-      window.open(gCalLink, '_blank');
-    }
+    // 2. 觸發 Email 發送 (喚起郵件軟體)
+    sendEmailNotification(formData, selectedService?.name || '', selectedArtist?.name || '');
+
+    alert('預約資訊已準備就緒！請在隨後跳出的郵件視窗中點擊「發送」，讓我們能即時收到您的預約申請。');
     
     navigate('/my-bookings');
   };
@@ -228,7 +239,7 @@ export const BookingPage: React.FC = () => {
                 <div className="flex gap-4 pt-6">
                   <button type="button" onClick={prevStep} className="flex-1 bg-slate-100 text-slate-700 py-4 rounded-full font-bold">返回</button>
                   <button type="submit" className="flex-[2] bg-pdn-plum text-white py-4 rounded-full font-bold hover:bg-[#6e2a3a] shadow-xl shadow-rose-100">
-                    確認送出預約
+                    確認送出預約並發送 Email
                   </button>
                 </div>
               </form>
