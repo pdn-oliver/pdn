@@ -1,8 +1,10 @@
 
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { SERVICES, ARTISTS, TIME_SLOTS } from '../constants';
 
 export const BookingPage: React.FC = () => {
+  const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     serviceId: '',
@@ -20,7 +22,7 @@ export const BookingPage: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     alert('預約成功！PDN 將儘速與您聯繫確認細節。');
-    window.location.hash = '/';
+    navigate('/');
   };
 
   const selectedService = SERVICES.find(s => s.id === formData.serviceId);
@@ -37,7 +39,7 @@ export const BookingPage: React.FC = () => {
               }`}>
                 {num}
               </div>
-              {num < 3 && <div className={`w-16 h-1 h-1 rounded ${step > num ? 'bg-pdn-plum' : 'bg-slate-200'}`}></div>}
+              {num < 3 && <div className={`w-16 h-1 rounded ${step > num ? 'bg-pdn-plum' : 'bg-slate-200'}`}></div>}
             </React.Fragment>
           ))}
         </div>
@@ -72,7 +74,7 @@ export const BookingPage: React.FC = () => {
                   </div>
                   <div className="space-y-4">
                     <label className="block font-semibold text-slate-700">專業美甲師</label>
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 gap-4">
                       {ARTISTS.map(a => (
                         <button 
                           key={a.id}

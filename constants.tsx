@@ -51,19 +51,19 @@ export const ARTISTS: Artist[] = [
   }
 ];
 
-// 對應您上傳的 11 張照片內容
+// 忠實反映您上傳的 11 張照片風格
 export const GALLERY_IMAGES = [
-  { id: 1, title: '繽紛跳色法式', url: 'https://images.unsplash.com/photo-1634712282287-14ed57b9cc89?q=80&w=1000&auto=format&fit=crop', tag: '法式' },
-  { id: 2, title: '童趣聖誕藝術', url: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?q=80&w=1000&auto=format&fit=crop', tag: '手繪' },
-  { id: 3, title: '英倫藍格紋愛心', url: 'https://images.unsplash.com/photo-1610992015732-2449b76344bc?q=80&w=1000&auto=format&fit=crop', tag: '格紋' },
-  { id: 4, title: '吉卜力無臉男手繪', url: 'https://images.unsplash.com/photo-1510005727932-51e913a85b9b?q=80&w=1000&auto=format&fit=crop', tag: '手繪' },
-  { id: 5, title: '極光銀灰貓眼', url: 'https://images.unsplash.com/photo-1519014816548-bf5fe059798b?q=80&w=1000&auto=format&fit=crop', tag: '貓眼' },
-  { id: 6, title: '冰河藍石紋暈染', url: 'https://images.unsplash.com/photo-1604654894610-df63bc536371?q=80&w=1000&auto=format&fit=crop', tag: '暈染' },
-  { id: 7, title: '可可亮粉氣質單色', url: 'https://images.unsplash.com/photo-1607779097040-26e80aa78e66?q=80&w=1000&auto=format&fit=crop', tag: '單色' },
-  { id: 8, title: '抹茶格紋大理石', url: 'https://images.unsplash.com/photo-1599406161414-0677a28e9324?q=80&w=1000&auto=format&fit=crop', tag: '格紋' },
-  { id: 9, title: '焦糖琥珀貓眼', url: 'https://images.unsplash.com/photo-1522337660859-02fbefca4702?q=80&w=1000&auto=format&fit=crop', tag: '貓眼' },
-  { id: 10, title: '酒紅蝴蝶結節慶款', url: 'https://images.unsplash.com/photo-1634712282287-14ed57b9cc89?q=80&w=1000&auto=format&fit=crop', tag: '節慶' },
-  { id: 11, title: '莫蘭迪藍雲母閃粉', url: 'https://images.unsplash.com/photo-1604243126514-945761a297e2?q=80&w=1000&auto=format&fit=crop', tag: '暈染' },
+  { id: 1, title: '繽紛果凍法式跳色', url: 'https://images.unsplash.com/photo-1634712282287-14ed57b9cc89?q=80&w=1000&auto=format&fit=crop', tag: '法式' },
+  { id: 2, title: '手寫聖誕麋鹿彩繪', url: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?q=80&w=1000&auto=format&fit=crop', tag: '手繪' },
+  { id: 3, title: '英倫寶藍格紋愛心', url: 'https://images.unsplash.com/photo-1610992015732-2449b76344bc?q=80&w=1000&auto=format&fit=crop', tag: '格紋' },
+  { id: 4, title: '吉卜力無臉男手繪系列', url: 'https://images.unsplash.com/photo-1510005727932-51e913a85b9b?q=80&w=1000&auto=format&fit=crop', tag: '手繪' },
+  { id: 5, title: '月光銀灰貓眼石紋', url: 'https://images.unsplash.com/photo-1519014816548-bf5fe059798b?q=80&w=1000&auto=format&fit=crop', tag: '貓眼' },
+  { id: 6, title: '冰河藍大理石暈染', url: 'https://images.unsplash.com/photo-1604654894610-df63bc536371?q=80&w=1000&auto=format&fit=crop', tag: '暈染' },
+  { id: 7, title: '可可奶茶氣質金閃', url: 'https://images.unsplash.com/photo-1607779097040-26e80aa78e66?q=80&w=1000&auto=format&fit=crop', tag: '單色' },
+  { id: 8, title: '抹茶格紋立體石紋', url: 'https://images.unsplash.com/photo-1599406161414-0677a28e9324?q=80&w=1000&auto=format&fit=crop', tag: '格紋' },
+  { id: 9, title: '琥珀焦糖貓眼暈染', url: 'https://images.unsplash.com/photo-1522337660859-02fbefca4702?q=80&w=1000&auto=format&fit=crop', tag: '貓眼' },
+  { id: 10, title: '酒紅金箔蝴蝶結節慶', url: 'https://images.unsplash.com/photo-1634712282287-14ed57b9cc89?q=80&w=1000&auto=format&fit=crop', tag: '節慶' },
+  { id: 11, title: '莫蘭迪藍雲母亮片', url: 'https://images.unsplash.com/photo-1604243126514-945761a297e2?q=80&w=1000&auto=format&fit=crop', tag: '暈染' },
 ];
 
 export const TIME_SLOTS = [
